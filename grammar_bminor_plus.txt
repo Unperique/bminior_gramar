@@ -1,0 +1,275 @@
+/* ============================================================
+   B-Minor+ Grammar
+   Extensión de B-Minor con:
+   - Clases y objetos
+   - While loops
+   - Operadores compuestos (+=, -=, *=, /=)
+   - Operadores de incremento/decremento (++, --)
+   - Operador ternario (?:)
+   ============================================================ */
+
+prog ::= decl_list 'EOF'
+
+/* ============================================================
+   DECLARATIONS - EXTENDED
+   ============================================================ */
+
+decl_list ::= /* epsilon */
+    | decl decl_list
+
+/* EXTENSIÓN: Se añade class_decl como nueva alternativa */
+decl ::= 'ID' ':' type_simple ';'
+    | 'ID' ':' type_array_sized ';'
+    | 'ID' ':' type_func ';'
+    | decl_init
+    | class_decl
+
+decl_init ::= 'ID' ':' type_simple '=' expr ';'
+    | 'ID' ':' type_array_sized '=' '{' opt_expr_list '}' ';'
+    | 'ID' ':' type_func '=' '{' opt_stmt_list '}'
+
+/* NUEVA: Declaración de clases */
+class_decl ::= 'ID' ':' 'CLASS' '=' '{' class_body '}'
+
+class_body ::= /* epsilon */
+    | class_member class_body
+
+class_member ::= 'ID' ':' type_simple ';'
+    | 'ID' ':' type_array_sized ';'
+    | 'ID' ':' type_func '=' '{' opt_stmt_list '}'
+
+/* ============================================================
+   STATEMENTS - EXTENDED
+   ============================================================ */
+
+opt_stmt_list ::= /* epsilon */
+    | stmt_list
+
+stmt_list ::= stmt
+    | stmt stmt_list
+
+stmt ::= open_stmt
+    | closed_stmt
+
+/* EXTENSIÓN: Se añade while_stmt_closed */
+closed_stmt ::= if_stmt_closed
+    | for_stmt_closed
+    | while_stmt_closed
+    | simple_stmt
+
+/* EXTENSIÓN: Se añade while_stmt_open */
+open_stmt ::= if_stmt_open
+    | for_stmt_open
+    | while_stmt_open
+
+/* IF statements (sin cambios) */
+if_cond ::= 'IF' '(' opt_expr ')'
+
+if_stmt_closed ::= if_cond closed_stmt 'ELSE' closed_stmt
+
+if_stmt_open ::= if_cond stmt
+    | if_cond closed_stmt 'ELSE' if_stmt_open
+
+/* FOR statements (sin cambios) */
+for_header ::= 'FOR' '(' opt_expr ';' opt_expr ';' opt_expr ')'
+
+for_stmt_open ::= for_header open_stmt
+
+for_stmt_closed ::= for_header closed_stmt
+
+/* NUEVA: WHILE statements */
+while_stmt_closed ::= 'WHILE' '(' opt_expr ')' closed_stmt
+
+while_stmt_open ::= 'WHILE' '(' opt_expr ')' open_stmt
+
+/* Simple statements (sin cambios) */
+simple_stmt ::= print_stmt
+    | return_stmt
+    | block_stmt
+    | decl
+    | expr ';'
+
+print_stmt ::= 'PRINT' opt_expr_list ';'
+
+return_stmt ::= 'RETURN' opt_expr ';'
+
+block_stmt ::= '{' stmt_list '}'
+
+/* ============================================================
+   EXPRESSIONS - EXTENDED
+   ============================================================ */
+
+opt_expr_list ::= /* epsilon */
+    | expr_list
+
+expr_list ::= expr
+    | expr ',' expr_list
+
+opt_expr ::= /* epsilon */
+    | expr
+
+expr ::= expr1
+
+/* EXTENSIÓN: Se añaden operadores compuestos (+=, -=, *=, /=) */
+expr1 ::= lval '=' expr1
+    | lval '+=' expr1
+    | lval '-=' expr1
+    | lval '*=' expr1
+    | lval '/=' expr1
+    | expr1_5
+
+/* NUEVA: Operador ternario (?:) */
+expr1_5 ::= expr2 '?' expr1_5 ':' expr1_5
+    | expr2
+
+/* EXTENSIÓN: lval ahora incluye acceso a miembros */
+lval ::= 'ID'
+    | 'ID' index
+    | lval '.' 'ID'
+
+/* Logical OR (sin cambios) */
+expr2 ::= expr2 'LOR' expr3
+    | expr3
+
+/* Logical AND (sin cambios) */
+expr3 ::= expr3 'LAND' expr4
+    | expr4
+
+/* Comparison operators (sin cambios) */
+expr4 ::= expr4 'EQ' expr5
+    | expr4 'NE' expr5
+    | expr4 'LT' expr5
+    | expr4 'LE' expr5
+    | expr4 'GT' expr5
+    | expr4 'GE' expr5
+    | expr5
+
+/* Addition/Subtraction (sin cambios) */
+expr5 ::= expr5 '+' expr6
+    | expr5 '-' expr6
+    | expr6
+
+/* Multiplication/Division/Modulo (sin cambios) */
+expr6 ::= expr6 '*' expr7
+    | expr6 '/' expr7
+    | expr6 '%' expr7
+    | expr7
+
+/* Exponentiation (sin cambios) */
+expr7 ::= expr7 '^' expr8
+    | expr8
+
+/* EXTENSIÓN: Se añaden pre-incremento y pre-decremento */
+expr8 ::= '-' expr8
+    | 'NOT' expr8
+    | 'INC' expr8
+    | 'DEC' expr8
+    | expr9
+
+/* EXTENSIÓN: Se añade acceso a miembros (.) */
+expr9 ::= expr9 'INC'
+    | expr9 'DEC'
+    | expr9 '.' 'ID'
+    | group
+
+/* EXTENSIÓN: Se añade operador new */
+group ::= '(' expr ')'
+    | 'ID' '(' opt_expr_list ')'
+    | 'NEW' 'ID' '(' opt_expr_list ')'
+    | 'ID' index
+    | factor
+
+/* Index operations (sin cambios) */
+index_list ::= index_list index
+    | index
+
+index ::= '[' expr ']'
+
+/* Literals and identifiers (sin cambios) */
+factor ::= 'ID'
+    | 'INTEGER_LITERAL'
+    | 'FLOAT_LITERAL'
+    | 'CHAR_LITERAL'
+    | 'STRING_LITERAL'
+    | 'TRUE'
+    | 'FALSE'
+
+/* ============================================================
+   TYPES - EXTENDED
+   ============================================================ */
+
+/* EXTENSIÓN: Se añade 'ID' para permitir tipos de clase */
+type_simple ::= 'INTEGER'
+    | 'FLOAT'
+    | 'BOOLEAN'
+    | 'CHAR'
+    | 'STRING'
+    | 'VOID'
+    | 'ID'
+
+type_array ::= 'ARRAY' '[' ']' type_simple
+    | 'ARRAY' '[' ']' type_array
+
+type_array_sized ::= 'ARRAY' index type_simple
+    | 'ARRAY' index type_array_sized
+
+type_func ::= 'FUNCTION' type_simple '(' opt_param_list ')'
+    | 'FUNCTION' type_array_sized '(' opt_param_list ')'
+
+opt_param_list ::= /* epsilon */
+    | param_list
+
+param_list ::= param
+    | param_list ',' param
+
+param ::= 'ID' ':' type_simple
+    | 'ID' ':' type_array
+    | 'ID' ':' type_array_sized
+
+/* ============================================================
+   NUEVOS TOKENS REQUERIDOS
+   ============================================================ */
+
+/* Tokens para clases y objetos:
+   - CLASS
+   - NEW
+
+/* Tokens para control de flujo:
+   - WHILE
+
+/* Tokens para operadores compuestos:
+   - += (PLUSEQ)
+   - -= (MINUSEQ)
+   - *= (TIMESEQ)
+   - /= (DIVEQ)
+
+/* Tokens para operadores de incremento/decremento:
+   - INC (ya existe en gramática original)
+   - DEC (ya existe en gramática original)
+
+/* Tokens para operador ternario:
+   - ? (QUESTION)
+   - : (COLON) (ya existe)
+
+/* Tokens para acceso a miembros:
+   - . (DOT)
+*/
+
+/* ============================================================
+   TABLA DE PRECEDENCIA Y ASOCIATIVIDAD
+   ============================================================
+   
+   Nivel | Operadores              | Asociatividad | Regla
+   ------|-------------------------|---------------|--------
+   1     | = += -= *= /=          | Derecha       | expr1
+   2     | ?:                      | Derecha       | expr1_5
+   3     | ||                      | Izquierda     | expr2
+   4     | &&                      | Izquierda     | expr3
+   5     | == != < <= > >=        | Izquierda     | expr4
+   6     | + -                     | Izquierda     | expr5
+   7     | * / %                   | Izquierda     | expr6
+   8     | ^                       | Izquierda     | expr7
+   9     | - ! ++ -- (unarios)    | Derecha       | expr8
+   10    | () [] . ++ -- (postfix)| Izquierda     | expr9
+   
+   ============================================================ */

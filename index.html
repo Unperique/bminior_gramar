@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B-Minor+ Grammar - Railroad Diagrams Atlas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            line-height: 1.65;
+            color: #2d2a26;
+            background: #e8e4de;
+            min-height: 100vh;
+            padding: 24px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fdfcf9;
+            border: 1px solid #d4cfc7;
+            overflow: hidden;
+        }
+        
+        header {
+            background: #2d2a26;
+            color: #f5f3ef;
+            padding: 32px 40px;
+            border-bottom: 3px solid #8b7355;
+        }
+        
+        header h1 {
+            font-size: 1.85em;
+            font-weight: 600;
+            margin-bottom: 6px;
+            letter-spacing: 0.02em;
+        }
+        
+        header p {
+            font-size: 0.95em;
+            color: #b8b2a8;
+            font-style: italic;
+        }
+        
+        nav {
+            background: #f5f2ec;
+            padding: 14px 40px;
+            border-bottom: 1px solid #d4cfc7;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        nav a {
+            color: #5c5248;
+            text-decoration: none;
+            padding: 6px 12px;
+            font-size: 0.9em;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.15s, color 0.15s;
+        }
+        
+        nav a:hover {
+            color: #2d2a26;
+            border-bottom-color: #8b7355;
+        }
+        
+        main {
+            padding: 36px 40px 48px;
+        }
+        
+        section {
+            margin-bottom: 48px;
+        }
+        
+        section h2 {
+            color: #2d2a26;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 24px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #d4cfc7;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        
+        .rule {
+            margin-bottom: 32px;
+            padding: 18px 20px;
+            background: #faf8f5;
+            border: 1px solid #e5e0d8;
+        }
+        
+        .rule h3 {
+            color: #2d2a26;
+            margin-bottom: 12px;
+            font-size: 1.15em;
+            font-weight: 600;
+        }
+        
+        .rule-name {
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            background: #2d2a26;
+            color: #f5f3ef;
+            padding: 2px 6px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        
+        .diagram-container {
+            background: #fff;
+            padding: 16px;
+            border: 1px solid #e5e0d8;
+            overflow-x: auto;
+            margin-top: 8px;
+        }
+        
+        .diagram-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .info-box {
+            background: #f0ede8;
+            border-left: 3px solid #8b7355;
+            padding: 12px 16px;
+            margin: 16px 0;
+        }
+        
+        .info-box strong {
+            color: #5c5248;
+        }
+        
+        .extension-badge {
+            display: inline-block;
+            background: #5c5248;
+            color: #f5f3ef;
+            padding: 2px 8px;
+            font-size: 0.7em;
+            font-weight: 600;
+            margin-left: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        footer {
+            background: #2d2a26;
+            color: #b8b2a8;
+            text-align: center;
+            padding: 18px;
+            margin-top: 32px;
+            font-size: 0.85em;
+        }
+        
+        footer p {
+            margin: 2px 0;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 24px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-box {
+            width: 28px;
+            height: 18px;
+            border: 1px solid #2d2a26;
+        }
+        
+        .terminal {
+            background: #c9d4b8;
+        }
+        
+        .non-terminal {
+            background: #b8c9d4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>B-Minor+ Grammar Atlas</h1>
+            <p>Railroad Diagrams - Visualización Completa de la Sintaxis</p>
+        </header>
+        
+        <nav>
+            <ul>
+                <li><a href="#intro">Introducción</a></li>
+                <li><a href="#program">Program</a></li>
+                <li><a href="#declarations">Declarations</a></li>
+                <li><a href="#statements">Statements</a></li>
+                <li><a href="#expressions">Expressions</a></li>
+                <li><a href="#types">Types</a></li>
+            </ul>
+        </nav>
+        
+        <main>
+            <section id="intro">
+                <h2>Introducción</h2>
+                
+                <div class="info-box">
+                    <strong>Leyenda de Colores:</strong>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-box terminal"></div>
+                            <span><strong>Verde (redondeado):</strong> Terminales (tokens, palabras clave)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box non-terminal"></div>
+                            <span><strong>Azul (rectangular):</strong> No terminales (reglas de la gramática)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <strong>Extensiones de B-Minor+:</strong><br>
+                    • Clases y Objetos (CLASS, NEW, acceso con .)<br>
+                    • While loops (WHILE)<br>
+                    • Operadores compuestos (+=, -=, *=, /=)<br>
+                    • Pre/Post incremento y decremento (++, --)<br>
+                    • Operador ternario (?:)
+                </div>
+            </section>
+            
+            <section id="program">
+                <h2>Program Structure</h2>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">prog</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/prog.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="declarations">
+                <h2>Declarations</h2>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">decl_list</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/decl_list.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">decl</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/decl.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">decl_init</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/decl_init.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">class_decl</span> <span class="extension-badge">NUEVA</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/class_decl.svg" type="image/svg+xml"></object>
+                    </div>
+                    <div class="info-box">
+                        <strong>Extensión:</strong> Permite definir clases con miembros de datos y métodos.
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">class_body</span> <span class="extension-badge">NUEVA</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/class_body.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">class_member</span> <span class="extension-badge">NUEVA</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/class_member.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="statements">
+                <h2>Statements</h2>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">stmt</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/stmt.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">closed_stmt</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/closed_stmt.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">open_stmt</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/open_stmt.svg" type="image/svg+xml"></object>
+                    </div>
+                    <div class="info-box">
+                        <strong>Dangling-Else:</strong> La separación entre open_stmt y closed_stmt resuelve la ambigüedad del dangling-else.
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">if_stmt_closed</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/if_stmt_closed.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">if_stmt_open</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/if_stmt_open.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">for_stmt_closed</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/for_stmt_closed.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">for_stmt_open</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/for_stmt_open.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">while_stmt_closed</span> <span class="extension-badge">NUEVA</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/while_stmt_closed.svg" type="image/svg+xml"></object>
+                    </div>
+                    <div class="info-box">
+                        <strong>Extensión:</strong> Bucle while con el mismo patrón open/closed que if y for.
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">while_stmt_open</span> <span class="extension-badge">NUEVA</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/while_stmt_open.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">simple_stmt</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/simple_stmt.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">print_stmt</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/print_stmt.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">return_stmt</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/return_stmt.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">block_stmt</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/block_stmt.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="expressions">
+                <h2>Expressions</h2>
+                
+                <div class="info-box">
+                    <strong>Precedencia de Operadores (menor a mayor):</strong><br>
+                    1. Asignación: = += -= *= /= (asocia a la derecha)<br>
+                    2. Ternario: ?: (asocia a la derecha)<br>
+                    3. OR lógico: ||<br>
+                    4. AND lógico: &&<br>
+                    5. Comparación: == != < <= > >=<br>
+                    6. Suma/Resta: + -<br>
+                    7. Multiplicación/División: * / %<br>
+                    8. Exponenciación: ^<br>
+                    9. Unarios: - ! ++ -- (prefijo)<br>
+                    10. Postfijo: ++ -- . () []
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">expr1</span> (Asignación) <span class="extension-badge">EXTENDIDA</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/expr1.svg" type="image/svg+xml"></object>
+                    </div>
+                    <div class="info-box">
+                        <strong>Extensión:</strong> Operadores compuestos +=, -=, *=, /=
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">expr1_5</span> (Ternario) <span class="extension-badge">NUEVA</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/expr1_5.svg" type="image/svg+xml"></object>
+                    </div>
+                    <div class="info-box">
+                        <strong>Extensión:</strong> Operador ternario condicional (? :)
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">expr2</span> (OR Lógico)</h3>
+                    <div class="diagram-container">
+                        <object data="svg/expr2.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">expr3</span> (AND Lógico)</h3>
+                    <div class="diagram-container">
+                        <object data="svg/expr3.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">expr4</span> (Comparación)</h3>
+                    <div class="diagram-container">
+                        <object data="svg/expr4.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">expr5</span> (Suma/Resta)</h3>
+                    <div class="diagram-container">
+                        <object data="svg/expr5.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">expr6</span> (Multiplicación/División)</h3>
+                    <div class="diagram-container">
+                        <object data="svg/expr6.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">expr7</span> (Exponenciación)</h3>
+                    <div class="diagram-container">
+                        <object data="svg/expr7.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">expr8</span> (Unarios) <span class="extension-badge">EXTENDIDA</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/expr8.svg" type="image/svg+xml"></object>
+                    </div>
+                    <div class="info-box">
+                        <strong>Extensión:</strong> Pre-incremento (++expr) y pre-decremento (--expr)
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">expr9</span> (Postfijo) <span class="extension-badge">EXTENDIDA</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/expr9.svg" type="image/svg+xml"></object>
+                    </div>
+                    <div class="info-box">
+                        <strong>Extensión:</strong> Acceso a miembros (.ID) para objetos
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">group</span> <span class="extension-badge">EXTENDIDA</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/group.svg" type="image/svg+xml"></object>
+                    </div>
+                    <div class="info-box">
+                        <strong>Extensión:</strong> Operador NEW para crear instancias de clases
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">lval</span> <span class="extension-badge">EXTENDIDA</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/lval.svg" type="image/svg+xml"></object>
+                    </div>
+                    <div class="info-box">
+                        <strong>Extensión:</strong> Lvalues pueden incluir acceso a miembros (lval.ID)
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">index</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/index.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">factor</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/factor.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="types">
+                <h2>Types</h2>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">type_simple</span> <span class="extension-badge">EXTENDIDA</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/type_simple.svg" type="image/svg+xml"></object>
+                    </div>
+                    <div class="info-box">
+                        <strong>Extensión:</strong> ID como tipo permite usar nombres de clases como tipos
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">type_array</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/type_array.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">type_array_sized</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/type_array_sized.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+                
+                <div class="rule">
+                    <h3><span class="rule-name">type_func</span></h3>
+                    <div class="diagram-container">
+                        <object data="svg/type_func.svg" type="image/svg+xml"></object>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>B-Minor+ Grammar Atlas | Generado con Railroad Diagrams</p>
+            <p>Taller de Extensión de Gramática - Compiladores 2025</p>
+        </footer>
+    </div>
+</body>
+</html>
